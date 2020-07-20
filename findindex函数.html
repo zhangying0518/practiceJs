@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+<div class="div">点击</div>
+<script type="text/javascript">
+	var arr = [1,3,5,7]
+	var scrollY = 4
+	const index = arr.findIndex((top, index) => {//findIndex() 返回符合测试条件的数组第一个元素下标。
+	    // scrollY>=top&&scrollY<下一个top
+	    console.log("top",top)
+	    return scrollY >= top && scrollY < arr[index + 1];
+	  });
+	console.log("indexindex",index)//1 返回的下标为1，因为1对应的数字为3，3满足条件 scrollY >= top && scrollY < arr[index + 1]; 4>=3<5
+	return index
+ </script>
+</body>
+</html>
