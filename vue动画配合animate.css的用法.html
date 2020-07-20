@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		p{
+			width: 100px;
+			height: 100px;
+			background: red;
+			margin: 10px auto;
+		}
+	</style>
+	 <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"
+  />
+  <!-- <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css"> -->
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+	<div id="app">
+		<input value="点击显示隐藏" type="button" @click="isShow=!isShow">
+		<!-- 单个元素运动3.x版本写法为	animate	fadeInLeft	  -->
+		<!--  <transition enter-active-class="animate__animated animate__fadeInLeft" leaver-active-class="animate__animated animate__fadeOutRight">
+            <p v-if="isShow"></p>
+        </transition> -->
+        
+		<!-- 多个元素运动，多个元素时必须要加key，amimate.css如果为4.x版本的话，那么写法必须为animate__animated animate__fadeInLeft -->
+         <transition-group enter-active-class="animate__animated animate__fadeInLeft" leaver-active-class="animate__animated animate__fadeOutRight">
+            <p v-if="isShow" :key="1"></p>
+            <p v-if="isShow" :key="2"></p>
+        </transition-group>
+	</div>
+	<script>
+	window.onload = function(){
+		 new Vue({
+			el:"#app",
+			data: {
+    		isShow: false
+ 		  }
+		})
+	}
+	</script>
+	
+</body>
+</html>
