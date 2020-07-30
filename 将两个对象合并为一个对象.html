@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+	// 方法1
+		// var tmpa  = {
+	 //        q : 'qq',
+	 //        w : 'ww'
+	 //      }
+		// var tmpb = {
+	 //        e : 'ee',
+	 //        r : 'rr'
+		//   }
+		// var tmp = Object.assign(tmpa , tmpb)
+		// console.log("tmp",tmp)
+		// 
+	// 方法2
+	
+		var tmpa  = {
+	        q : 'qq',
+	        w : 'ww'
+	      }
+		var tmpb = {
+	        ...tmpa,
+	        e : 'ee',
+	        r : 'rr'
+		  }
+		 console.log("tmp",tmpb)
+
+	</script>
+</body>
+</html>

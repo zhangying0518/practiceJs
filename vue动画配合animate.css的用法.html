@@ -23,15 +23,16 @@
 	<div id="app">
 		<input value="点击显示隐藏" type="button" @click="isShow=!isShow">
 		<!-- 单个元素运动3.x版本写法为	animate	fadeInLeft	  -->
-		<!--  <transition enter-active-class="animate__animated animate__fadeInLeft" leaver-active-class="animate__animated animate__fadeOutRight">
+		 <transition enter-active-class="animate__animated animate__slideInLeft" leave-active-class="animate__animated animate__slideInRight" >
             <p v-if="isShow"></p>
-        </transition> -->
+        </transition>
+        
         
 		<!-- 多个元素运动，多个元素时必须要加key，amimate.css如果为4.x版本的话，那么写法必须为animate__animated animate__fadeInLeft -->
-         <transition-group enter-active-class="animate__animated animate__fadeInLeft" leaver-active-class="animate__animated animate__fadeOutRight">
+       <!--   <transition-group enter-active-class="animate__animated animate__fadeInLeft" leaver-active-class="animate__animated animate__fadeOutRight">
             <p v-if="isShow" :key="1"></p>
             <p v-if="isShow" :key="2"></p>
-        </transition-group>
+        </transition-group> -->
 	</div>
 	<script>
 	window.onload = function(){
