@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="放大镜.css">
+</head>
+<body>
+	<div id="box">
+		<div id="small_box">
+			<img src="img/small.png">
+			<span id="mask"></span>
+		</div>
+		<div id="big_box">
+			<img src="img/big.png">
+		</div>
+	</div>
+	<script type="text/javascript">
+		var box = document.getElementById('box')
+		var small_box = box.children[0]
+		var mask = small_box.children[1]
+		var small_img = small_box.children[0]
+		var big_box = box.children[1]
+		var big_img = big_box.children[0]
+
+		small_box.onmouseover = function(){
+			mask.style.display = 'block'
+			big_box.style.display = 'block'
+			small_box.onmousemove = function(e){
+				e = e || window.event
+
+				// 遮罩层移动的水平垂直距离
+				var moveX = e.clientX - small_box.offsetLeft - box.offsetLeft - mask.offsetWidth * 0.5
+				var moveY = e.clientY - small_box.offsetTop - box.offsetTop - mask.offsetHeight * 0.5
+
+				// 边界处理
+				if(moveX<0){
+					moveX = 0
+				}else if(moveX>=small_box.offsetWidth-mask.offsetWidth){
+					moveX = small_box.offsetWidth-mask.offsetWidth
+				}
+				if(moveY<0){
+					moveY = 0
+				}else if(moveY>=small_box.offsetHeight-mask.offsetHeight){
+					moveY = small_box.offsetHeight-mask.offsetHeight
+				}
+
+				// 让遮罩层移动起来
+				mask.style.left = moveX + 'px'
+				mask.style.top = moveY + 'px'
+
+				// 让大图移动起来
+				// 公式：moveX / 大图移动的距离 = （small_img宽度 - mask宽度）/ (big_img宽度 - big_box宽度)
+				var x = (big_img.offsetWidth - big_box.offsetWidth) / (small_box.offsetWidth - mask.offsetWidth)
+				var y = (big_img.offsetHeight - big_box.offsetHeight) / (small_box.offsetHeight - mask.offsetHeight)
+				big_img.style.left = -moveX * x + 'px'
+				big_img.style.top = - moveY * y + 'px'
+
+			}
+			small_box.onmouseout = function(){
+				mask.style.display = 'none'
+				big_box.style.display = 'none'
+			}
+
+		}
+
+	</script>
+	
+</body>
+</html>

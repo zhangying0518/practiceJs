@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style> 
+     .wrapper {
+        position: relative;
+        width: 600px;
+        text-align: center;
+        margin: 0 auto;
+      }
+      canvas {
+        display: block;
+        margin: 0 auto;
+        background-color: #33cc99;
+        }
+
+      .gameover {
+        display: none;
+        position: absolute;
+        top: 23px;
+        width: 600px;
+        height: 600px;
+        line-height: 600px;
+        margin: 0 auto;
+        color: #fff;
+        font-size: 68px;
+        background-color: rgba(0, 0, 0, 0.6);
+      }
+
+      .score {
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-weight: bold;
+      }
+     .direction_content{
+         width: 100%;
+         height: 150px;
+         position: relative;
+        }
+    .direction_div{
+        position:relative;
+        width: 30px;
+        height: 30px;
+        position: absolute;
+    }
+    .direction_div img{
+        width: 100%;
+        height:  100%;
+    }
+    .left_direction {
+        top: 40%;
+        left: 35%; 
+    }
+    .bottom_direction{
+        top:70%;
+        left: 45%;
+    }
+    .right_direction{
+        top: 40%;
+        left: 56%;
+    }
+    .top_direction{
+        top: 2%;
+        left: 45%; 
+    }   
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+      <button id="btnStart">开始</button>
+      <div class="score">
+            <span id="score">分数：0</span> <span id="max">最高分：0</span>
+      </div>
+      <canvas id="canvas" width="600" height="600"></canvas>
+      <div id="gameover" class="gameover">Game Over!</div>
+      <div class="direction_content">
+            <div class="direction_div top_direction" id="arrowUp">
+                <img class="camera_img_up" src="http://47.92.83.204:8080/zhangying/img/snake/up.png" />
+            </div>
+            <div class="direction_div left_direction" id="arrowLeft">
+                <img class="camera_img_left" src="http://47.92.83.204:8080/zhangying/img/snake/left.png" />
+            </div>
+            <div class="direction_div bottom_direction" id="arrowDown">
+                <img class="camera_img_bottom" src="http://47.92.83.204:8080/zhangying/img/snake/111.png" />
+            </div>
+            <div class="direction_div right_direction" id="arrowRight">
+                <img class="camera_img_right" src="http://47.92.83.204:8080/zhangying/img/snake/right.png" />
+            </div>
+      </div>
+    </div>
+   
+    <script>
+        var canvas = document.getElementById('canvas')
+        var ctx = canvas.getContext('2d')
+
+        var gameover = document.getElementById('gameover')
+        var scoreSpan = document.getElementById('score')
+        var maxSpan = document.getElementById('max')
+        var btnStart = document.getElementById('btnStart')
+        var btnStop = document.getElementById('btnStop')
+
+        var arrowUp = document.getElementById('arrowUp')
+        var arrowLeft = document.getElementById('arrowLeft')
+        var arrowDown = document.getElementById('arrowDown')
+        var arrowRight = document.getElementById('arrowRight')
+
+        // 食物的默认位置
+        var x 
+        var y 
+
+        // 蛇的默认位置
+        var snake 
+
+        //食物是否被吃掉
+        var isEated 
+
+        // 游戏是否结束
+        var isGameOver = true
+
+        // 蛇的方向
+        var directionX
+        var directionY 
+
+         // 贪吃蛇当前方向
+        var curDir 
+
+        // 是否按过反向
+        var isKeyDown 
+
+        // 当前分数
+        var score = 0
+
+        // 最高分
+        var max =(localStorage.getItem('itcast_snake_max') || 0) 
+       
+        renderWelcome()
+
+        maxSpan.innerText = '最高分：' + (localStorage.getItem('maxScore') || 0)
+        btnStart.addEventListener('click',function(){
+            this.innerText = '重新开始'
+            resetData()
+        })
+
+        arrowUp.addEventListener('click',function(){
+            if(curDir=='down'){
+                return
+            }
+            directionX = 0
+            directionY = -1
+            curDir = 'up'
+
+        })
+        arrowLeft.addEventListener('click',function(){
+            if(curDir=='right'){
+                return
+            }
+            directionX = -1
+            directionY = 0
+            curDir = 'left'
+        })
+        arrowDown.addEventListener('click',function(){
+            if(curDir=='up'){
+                return
+            }
+            directionX = 0
+            directionY = 1
+            curDir = 'down'
+        })
+        arrowRight.addEventListener('click',function(){
+            if(curDir=='left'){
+                return
+            }
+            directionX = 1
+            directionY = 0
+            curDir = 'right'
+        })
+
+        document.addEventListener('keydown', function (e) {//监听键盘按下行为
+            if(isKeyDown) return
+            isKeyDown = true
+
+            if (curDir === 'right' && e.keyCode === 37) {//左
+                return
+            }if (curDir === 'down' && e.keyCode === 38) {//上
+                 return
+            }if (curDir === 'left' && e.keyCode === 39) {//右
+                 return
+            }if (curDir === 'up' && e.keyCode === 40) {//下
+                 return
+            }
+            switch (e.keyCode){
+                case 38:
+                    directionX = 0
+                    directionY = -1
+                    curDir = 'up'
+                    break
+                case 40:
+                    directionX = 0
+                    directionY = 1
+                    curDir = 'down'
+                    break
+                case 37:
+                    directionX = -1
+                    directionY = 0
+                    curDir = 'left'
+                    break
+                case 39:
+                    directionX = 1
+                    directionY = 0
+                    curDir = 'right'
+                    break
+            }
+        })
+
+        // 让贪吃蛇动起来，原理就是不断擦除，然后不断重绘
+        setInterval(function () {
+            if (isGameOver) {//游戏结束
+                return
+            }
+            // 擦除
+            ctx.clearRect(0, 0, 600, 600)
+           
+            var oldHead = snake[0]
+            var newHead = {
+                x: oldHead.x + directionX,
+                y: oldHead.y + directionY
+            }
+            if (
+                newHead.y < 0 ||
+                newHead.x < 0 ||
+                newHead.x * 30 >= 600 ||
+                newHead.y * 30 >= 600 ||
+                snake.some(function(item){
+                    return item.x === newHead.x && item.y === newHead.y
+                })
+            ) {//游戏结束的判断
+                isGameOver = true
+                gameover.style.display = 'block'
+                localStorage.setItem('maxScore',max)
+            } else {
+                snake.unshift(newHead)
+                /* 蛇吃食物的分析：当蛇头的坐标和食物的坐标重合的时候，就表示食物被吃掉了，此时应该做两件事
+                    1.让isEated变为true,表示食物被吃掉
+                    2.让蛇增加一节长度
+                */
+                // 蛇动起来分析：删除最后一节，然后在最前面添加一个新节，通过定时器不断的执行这个操作就有一个蛇动起来的效果
+                if (snake[0].x * 30 === x && snake[0].y * 30 === y) {//食物被吃掉，重新生成一个食物，并在蛇头添加一个新节
+                    isEated = true
+                    score += 10
+                    scoreSpan.innerText = '分数：' + score
+                    if(score>max){
+                        max = score
+                    }
+                    maxSpan.innerText = '最高分：' + max
+                } else {//食物没有被吃掉,移除最后一节，在蛇头添加一个新节
+                    isEated = false
+                    snake.pop()
+                } 
+                renderFood()
+                renderSnake()
+                renderMap()
+                isKeyDown = false
+            }
+
+        }, 1000 / 3)
+
+        function resetData() {
+            gameover.style.display = 'none'
+            
+            isEated = false
+
+            x = Math.floor(Math.random() * 20) * 30
+            y = Math.floor(Math.random() * 20) * 30
+
+            snake = [{ x: 3, y: 0 }, { x: 2, y: 0 }, { x: 1, y: 0 }]
+
+            directionX = 1
+            directionY = 0
+
+            isGameOver = false
+
+            curDir = 'right'
+            isKeyDown = false
+            score = 0
+            scoreSpan.innerText = '分数：0'
+        }
+
+        function renderWelcome(){//封面
+            ctx.textAlign = 'center'
+            ctx.font = '60px Arial'
+            ctx.fillText('贪吃蛇',300,100)
+
+            ctx.font ='40px Arial'
+            ctx.fillText('if同学',300,300)
+            ctx.fillText('前端攻城狮',300,360)
+            ctx.fillText('张英',300,420)
+
+            // 注意：设置文字居中时,fillText的第二个参数必须为画布宽度一半，而且要先设定textAlign ，然后再设定fillText，否则无效，原因的话emmm，我也不知道，但是我试过确实是要先这样，然后那样，就成功了
+        }
+
+        function renderFood(){
+                // 随机生成食物的位置
+            if (isEated) {//食物被吃掉后就重新绘制食物
+                x = Math.floor(Math.random() * 20) * 30
+                y = Math.floor(Math.random() * 20) * 30
+            }
+            // 绘制食物
+            ctx.fillStyle = '#cccc00'
+            ctx.fillRect(x, y, 30, 30)
+        }
+        function renderSnake(){ // 绘制蛇
+            for (var i = 0; i < snake.length; i++) {
+                if (i === 0) {//舌头
+                    ctx.fillStyle = '#ff0033'
+                } else {//蛇身
+                    ctx.fillStyle = '#333399'
+                }
+                ctx.fillRect(snake[i].x * 30, snake[i].y * 30, 30, 30)
+            }
+        }
+        function renderMap(){
+             for (var i = 1; i < 20; i++) {//绘制网格
+                // 水平线
+                ctx.moveTo(0, i * 30 + 0.5)
+                ctx.lineTo(600, i * 30 + 0.5)
+
+                // 垂直线
+                ctx.moveTo(i * 30 + 0.5, 0)
+                ctx.lineTo(i * 30 + 0.5, 600)
+            }
+            ctx.strokeStyle = 'white'
+            ctx.stroke()
+        }
+    </script>
+</body>
+
+</html>

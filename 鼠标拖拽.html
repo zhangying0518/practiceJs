@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>拖拽</title>
+	<style type="text/css">
+		#box1{
+			width: 100px;
+			height: 100px;
+			background: red;
+			position: absolute;
+		}
+		#box2{
+			width: 100px;
+			height: 100px;
+			background: green;
+			position: absolute;
+			left: 200px;
+			top: 200px;
+		}
+	</style>
+</head>
+<body>
+	<script type="text/javascript">
+		window.onload = function () {// 拖拽的流程
+			var box1 = document.getElementById("box1")
+			var box2 = document.getElementById("box2")
+			drag(box1)
+			drag(box2)
+		}
+		function drag(obj){
+			obj.onmousedown = function(event){// 1.当鼠标在被拖拽元素上按下时，开始拖拽onmousedown
+				event = event || window.event
+				var ol = event.clientX - obj.offsetLeft
+				var ot = event.clientY - obj.offsetTop
+				document.onmousemove = function(event){// 2.当鼠标移动时被拖拽元素跟随移动onmousemove
+					event = event || window.event
+					var left = event.clientX - ol
+					var top = event.clientY - ot
+					obj.style.left = left + 'px'
+					obj.style.top = top + 'px'
+				}
+				document.onmouseup = function(){// 3.当鼠标松开时，被拖拽元素固定在当前位置onmouseup
+					// 取消onmousemove和onmouseup事件
+					document.onmousemove = null
+					document.onmouseup = null
+				}
+				// 当documen中有内容，并且我们按了全选后拖拽时，会出现异常，所以下面这句就是解决这个问题
+				return false
+			}
+		}
+	</script>
+	<div id="box1"></div>
+	<div id="box2"></div>
+	</body>
+	</html>
